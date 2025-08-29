@@ -1,0 +1,351 @@
+openapi: 3.0.0
+info:
+  title: 'API de Pedidos iPag'
+  description: 'Documentação da API REST para gerenciamento de pedidos e notificações.'
+  version: 1.0.0
+servers:
+  -
+    url: 'http://localhost:8000'
+    description: 'Servidor local de desenvolvimento'
+paths:
+  /auth/token:
+    post:
+      tags:
+        - Auth
+      summary: 'Gera um token JWT para autenticação'
+      description: 'Retorna um token JWT para uso nas rotas protegidas.'
+      operationId: ea63fa8111fbdf61fb09f402669c2e49
+      parameters:
+        -
+          name: x-api-key
+          in: header
+          description: 'Chave de API para autenticação'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Token JWT gerado com sucesso'
+          content:
+            application/json:
+              schema:
+                properties:
+                  token: { type: string }
+                type: object
+        '401':
+          description: 'Unauthorized: Invalid API Key'
+          content:
+            application/json:
+              schema:
+                properties:
+                  error: { type: string, example: 'Unauthorized: Invalid API Key' }
+                type: object
+  /health:
+    get:
+      tags:
+        - Health
+      summary: 'Verifica se a API está online'
+      description: 'Endpoint de health check.'
+      operationId: 18de2bc5dc0f0261d68cd0f72c1be10a
+      responses:
+        '200':
+          description: 'API online'
+          content:
+            application/json:
+              schema:
+                properties:
+                  status: { type: string, example: ok }
+                type: object
+  /orders:
+    get:
+      tags:
+        - Orders
+      summary: 'Lista pedidos'
+      description: 'Lista todos os pedidos com filtros opcionais.'
+      operationId: ab4007372fec3d140ee83219a42e2b3e
+      parameters:
+        -
+          name: id
+          in: query
+          schema:
+            type: integer
+        -
+          name: customer_id
+          in: query
+          schema:
+            type: integer
+        -
+          name: order_number
+          in: query
+          schema:
+            type: string
+        -
+          name: status
+          in: query
+          schema:
+            type: string
+            enum:
+              - PENDING
+              - WAITING_PAYMENT
+              - PAID
+              - PROCESSING
+              - SHIPPED
+              - DELIVERED
+              - CANCELED
+        -
+          name: date_from
+          in: query
+          schema:
+            type: string
+            format: date
+        -
+          name: date_to
+          in: query
+          schema:
+            type: string
+            format: date
+        -
+          name: min_value
+          in: query
+          schema:
+            type: number
+        -
+          name: max_value
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: 'Lista de pedidos'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+        '422':
+          description: 'Dados Inválidos'
+        '500':
+          description: 'Erro interno'
+      security:
+        -
+          bearerAuth: []
+    post:
+      tags:
+        - Orders
+      summary: 'Cria um novo pedido'
+      description: 'Cria um pedido e retorna seus dados.'
+      operationId: f0ca9215ea0c6ab50183c0acc15a2493
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+      responses:
+        '201':
+          description: 'Pedido criado com sucesso'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '422':
+          description: 'Dados Inválidos'
+        '500':
+          description: 'Erro interno'
+      security:
+        -
+          bearerAuth: []
+  '/orders/{order_id}':
+    get:
+      tags:
+        - Orders
+      summary: 'Detalhes de um pedido'
+      description: 'Retorna os detalhes de um pedido pelo número.'
+      operationId: 756df5893848c052f1b3cd11ca6adb2e
+      parameters:
+        -
+          name: order_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Dados do pedido'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          description: 'Pedido não encontrado'
+        '422':
+          description: 'Dados Inválidos'
+        '500':
+          description: 'Erro interno'
+      security:
+        -
+          bearerAuth: []
+  /orders/summary:
+    get:
+      tags:
+        - Orders
+      summary: 'Resumo dos pedidos'
+      description: 'Retorna estatísticas dos pedidos.'
+      operationId: ebf05f94b585cd4bc1a25a7a31a30d3c
+      responses:
+        '200':
+          description: 'Resumo estatístico'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderSummary'
+        '500':
+          description: 'Erro interno'
+      security:
+        -
+          bearerAuth: []
+  '/orders/{order_id}/status':
+    put:
+      tags:
+        - Orders
+      summary: 'Atualiza status do pedido'
+      description: 'Atualiza o status do pedido (processamento assíncrono).'
+      operationId: 19139f05b5a09dd4c76840fac618c6a4
+      parameters:
+        -
+          name: order_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                status:
+                  type: string
+                  enum: [PENDING, WAITING_PAYMENT, PAID, PROCESSING, SHIPPED, DELIVERED, CANCELED]
+                notes:
+                  type: string
+              type: object
+      responses:
+        '202':
+          description: 'Status enviado para processamento'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string }
+                  order_id: { type: string }
+                  old_status: { type: string }
+                  new_status: { type: string }
+                type: object
+        '422':
+          description: 'Dados Inválidos'
+        '500':
+          description: 'Erro interno'
+      security:
+        -
+          bearerAuth: []
+components:
+  schemas:
+    Order:
+      properties:
+        order_id:
+          type: string
+        order_number:
+          type: string
+        status:
+          type: string
+        total_value:
+          type: number
+        customer:
+          $ref: '#/components/schemas/Customer'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        created_at:
+          type: string
+          format: date-time
+      type: object
+    Customer:
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        document:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+      type: object
+    Item:
+      properties:
+        id:
+          type: integer
+        order_id:
+          type: integer
+        product_name:
+          type: string
+        quantity:
+          type: integer
+        unit_value:
+          type: number
+        total_value:
+          type: number
+      type: object
+    CreateOrderRequest:
+      properties:
+        customer:
+          $ref: '#/components/schemas/Customer'
+        order:
+          properties:
+            total_value:
+              type: number
+            items:
+              type: array
+              items:
+                properties:
+                  product_name: { type: string }
+                  quantity: { type: integer }
+                  unit_value: { type: number }
+                type: object
+          type: object
+      type: object
+    OrderSummary:
+      properties:
+        total_orders:
+          type: integer
+        total_value:
+          type: number
+        average_order_value:
+          type: number
+        status_breakdown:
+          properties:
+            PENDING:
+              type: integer
+            PAID:
+              type: integer
+            DELIVERED:
+              type: integer
+          type: object
+      type: object
+tags:
+  -
+    name: Auth
+    description: Auth
+  -
+    name: Health
+    description: Health
+  -
+    name: Orders
+    description: Orders

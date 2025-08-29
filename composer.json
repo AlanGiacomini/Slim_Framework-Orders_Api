@@ -1,0 +1,29 @@
+{
+    "name": "alang/desafio-ipag",
+    "description": "Desafio iPag de programação",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Alang\\DesafioIpag\\": "app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Alan Giacomini",
+            "email": "alangiacominisp@hotmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "slim/slim": "^4.15",
+        "php-di/php-di": "^7.1",
+        "vlucas/phpdotenv": "^5.6",
+        "firebase/php-jwt": "^6.11",
+        "php-amqplib/php-amqplib": "^2.8",
+        "slim/psr7": "^1.7",
+        "predis/predis": "^2.1",
+        "zircote/swagger-php": "^4.8",
+        "doctrine/annotations": "^1.13"
+    }
+}

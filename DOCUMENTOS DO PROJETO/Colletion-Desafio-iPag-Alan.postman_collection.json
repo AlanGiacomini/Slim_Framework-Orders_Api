@@ -1,0 +1,75 @@
+{
+	"info": {
+		"_postman_id": "f9f0603c-29c9-40b7-b884-10c7b4c7a98c",
+		"name": "Colletion-Desafio-iPag-Alan",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32200659"
+	},
+	"item": [
+		{
+			"name": "POST /auth/token",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "token_api_exemplo",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/auth/token",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"auth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoic3lzdGVtIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzU2NDczNjgzLCJleHAiOjE3NTY0ODA4ODN9.Q7xv900quknxnaYefx86a7xVhFkPXIVL973vFmaQKh8",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "http://localhost:8000"
+		}
+	]
+}

@@ -1,0 +1,67 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ipag-api
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+    - mysql
+    - rabbitmq
+    - redis
+    
+  mysql:
+    image: mysql:8.0
+    container_name: ipag-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ipag
+      TZ: America/Sao_Paulo
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: ipag-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ipag-worker
+    depends_on:
+      - rabbitmq
+      - mysql
+    volumes:
+      - .:/var/www/html
+    command: php worker/statusOrderWorker.php
+    restart: always
+
+  migrator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql
+    command: bash -c "sleep 10 && php migrate.php"
+
+  redis:
+    image: redis:alpine
+    container_name: ipag-redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  db_data:
