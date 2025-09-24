@@ -1,7 +1,5 @@
 # Plano de Trabalho
 
-## Desafio Desenvolvedor(a) de Software - iPag
-
 ### Execução dos itens principais
 
 #### Lista de Tarefas
@@ -74,4 +72,4 @@ project-root/
 ├── README.md
 └── .env
 ```
-**OBS:** Os itens marcados com o ícone 🟡 fazem referência aos diferenciais opcionais do desafio.
+**OBS:** Os itens marcados com o ícone 🟡 fazem referência aos diferenciais que poderão ser implementados na primeira versão ou no futuro.
