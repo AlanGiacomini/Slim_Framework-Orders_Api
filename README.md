@@ -1,4 +1,4 @@
-# 📘 README - Desafio Desenvolvedor(a) de Software - iPag
+# 📘 README - API de Gerenciamento de Pedidos com Slim Framework
 
 ## 📑 Sumário
 
@@ -13,7 +13,7 @@
 
 ## 📦 Sobre o Projeto
 
-Este projeto foi desenvolvido como parte do processo seletivo da iPag. O objetivo é construir uma API REST para gerenciamento de pedidos de venda, com processamento assíncrono de atualizações de status e notificações via RabbitMQ.
+O objetivo é construir uma API REST para gerenciamento de pedidos de venda, com processamento assíncrono de atualizações de status e notificações via RabbitMQ.
 
 ## 🚀 Tecnologias Utilizadas
 
@@ -727,8 +727,6 @@ $app->group('/orders', function ($group) {
     // suas rotas protegidas
 })->add(new JwtMiddleware())->add(new RateLimitMiddleware());
 ```
-
-Aqui vai uma descrição clara e profissional que você pode usar no seu README para documentar os **health checks da API e do Worker**:
 
 ---
 
