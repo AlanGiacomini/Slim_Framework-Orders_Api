@@ -37,12 +37,6 @@ O objetivo é construir uma API REST para gerenciamento de pedidos de venda, com
 │   README.md
 │
 ├───DOCUMENTOS DO PROJETO
-│       Colletion-Desafio-iPag-Alan.postman_collection.json
-│       Documento_API.md
-│       Enunciado_Desafio.md
-│       Estrutura de Arquivos.md
-│       Plano de Trabalho - Desafio iPag - Alan Giacomini.pdf
-│       Plano Desafio.md
 │
 ├───app
 │   │   SwaggerBase.php
